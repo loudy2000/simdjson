@@ -83,12 +83,6 @@ void ParsedJson::deallocate() {
   valid = false;
 }
 
-void ParsedJson::init() {
-  current_string_buf_loc = string_buf.get();
-  current_loc = 0;
-  valid = false;
-}
-
 WARN_UNUSED
 bool ParsedJson::print_json(std::ostream &os) const {
   if (!valid) {

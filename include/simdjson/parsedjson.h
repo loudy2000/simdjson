@@ -74,35 +74,6 @@ public:
   //
   //
 
-  // this should be considered a private function
-  really_inline void write_tape(uint64_t val, uint8_t c) {
-    tape[current_loc++] = val | ((static_cast<uint64_t>(c)) << 56);
-  }
-
-  really_inline void write_tape_s64(int64_t i) {
-    write_tape(0, 'l');
-    std::memcpy(&tape[current_loc], &i, sizeof(i));
-    ++current_loc;
-  }
-
-  really_inline void write_tape_u64(uint64_t i) {
-    write_tape(0, 'u');
-    tape[current_loc++] = i;
-  }
-
-  really_inline void write_tape_double(double d) {
-    write_tape(0, 'd');
-    static_assert(sizeof(d) == sizeof(tape[current_loc]), "mismatch size");
-    memcpy(&tape[current_loc++], &d, sizeof(double));
-    // tape[current_loc++] = *((uint64_t *)&d);
-  }
-
-  really_inline uint32_t get_current_loc() const { return current_loc; }
-
-  really_inline void annotate_previous_loc(uint32_t saved_loc, uint64_t val) {
-    tape[saved_loc] |= val;
-  }
-
   struct InvalidJSON : public std::exception {
     const char *what() const noexcept { return "JSON document is invalid"; }
   };
@@ -115,7 +86,6 @@ public:
   size_t depth_capacity{0}; // how deep we can go
   size_t tape_capacity{0};
   size_t string_capacity{0};
-  uint32_t current_loc{0};
   uint32_t n_structural_indexes{0};
 
   std::unique_ptr<uint32_t[]> structural_indexes;
@@ -130,7 +100,6 @@ public:
 #endif
 
   std::unique_ptr<uint8_t[]> string_buf;// should be at least byte_capacity
-  uint8_t *current_string_buf_loc;
   bool valid{false};
   int error_code{simdjson::UNINITIALIZED};
 

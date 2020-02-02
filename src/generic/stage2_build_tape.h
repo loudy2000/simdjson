@@ -255,7 +255,6 @@ struct structural_parser {
   }
 
   WARN_UNUSED really_inline ErrorValues start(ret_address finish_state) {
-    writer.pj.init(); // sets is_valid to false
     if (len > writer.pj.byte_capacity) {
       return CAPACITY;
     }
@@ -280,7 +279,7 @@ struct structural_parser {
 WARN_UNUSED  int
 unified_machine(const uint8_t *buf, size_t len, ParsedJson &pj) {
   static constexpr unified_machine_addresses addresses = INIT_ADDRESSES();
-  JsonWriter writer{pj};
+  JsonWriter writer(pj);
   structural_parser parser(buf, len, writer);
   int result = parser.start(addresses.finish);
   if (result) { return result; }

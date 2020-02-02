@@ -5,7 +5,6 @@ struct streaming_structural_parser: structural_parser {
 
   // override to add streaming
   WARN_UNUSED really_inline ErrorValues start(ret_address finish_parser) {
-    writer.pj.init(); // sets is_valid to false
     // Capacity ain't no thang for streaming, so we don't check it.
     // Advance to the first character as soon as possible
     advance_char();
@@ -40,7 +39,7 @@ struct streaming_structural_parser: structural_parser {
 WARN_UNUSED  int
 unified_machine(const uint8_t *buf, size_t len, ParsedJson &pj, size_t &next_json) {
   static constexpr unified_machine_addresses addresses = INIT_ADDRESSES();
-  JsonWriter writer{pj};
+  JsonWriter writer(pj);
   streaming_structural_parser parser(buf, len, writer, next_json);
   int result = parser.start(addresses.finish);
   if (result) { return result; }
